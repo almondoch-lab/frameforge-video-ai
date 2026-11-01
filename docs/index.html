@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0e19">
+  <meta name="description" content="ZeroScope AI로 5·10·15초 영상을 만드는 하이브리드 GPU 스튜디오">
+  <title>FRAMEFORGE — AI Video Studio</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" defer src="./app.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">F<span>·</span></div><div><strong>FRAMEFORGE</strong><small>AI VIDEO STUDIO</small></div></div>
+    <div class="navcap">WORKSPACE</div>
+    <a class="navlink active" href="#studio"><span>▧</span> 영상 스튜디오</a>
+    <a class="navlink" href="#engine"><span>◈</span> GPU 선택</a>
+    <a class="navlink" href="#setup"><span>⚙</span> 서버 연결 안내</a>
+    <div class="side-bottom"><div class="status-bubble"><i></i> ZeroScope v2 <span>연결형</span></div><p>브라우저에서 영상을 만들고, 클라우드 또는 내 컴퓨터의 GPU로 처리해요.</p></div>
+  </aside>
+  <main class="main" id="studio">
+    <header class="topbar"><div class="crumb">WORKSPACE <span>/</span> VIDEO GENERATION</div><div class="topright"><span class="topchip">576 × 320</span><span class="topchip">8 FPS</span><span class="avatar">F</span></div></header>
+    <div class="page-heading"><div><div class="eyebrow">TEXT TO VIDEO <span class="star">✦</span> STUDIO</div><h1>상상한 장면을<br><em>영상으로.</em></h1><p>문장을 입력하면 AI가 짧은 움직임을 생성하고 장면을 자연스럽게 연결해요.</p></div><div class="version">ZERO SCOPE <strong>02</strong><span>HYBRID EDITION</span></div></div>
+    <div class="workspace">
+      <section class="leftcol">
+        <div class="panel" id="engine"><div class="panel-header"><div class="panel-title"><span class="step">01</span> GPU 실행 환경</div><span id="engine-pill" class="label-pill">확인 중</span></div>
+          <div class="mode-row" role="radiogroup" aria-label="영상 생성 GPU 방식">
+            <label class="mode"><input type="radio" name="mode" value="auto" checked><span class="mode-name">✦ 자동 선택</span><small>적절한 환경 추천</small></label>
+            <label class="mode"><input type="radio" name="mode" value="local"><span class="mode-name">▣ 내 GPU</span><small>로컬 실행 프로그램</small></label>
+            <label class="mode"><input type="radio" name="mode" value="cloud"><span class="mode-name">☁ 클라우드</span><small>Hugging Face</small></label>
+          </div>
+          <div class="gpu-panel"><div><span class="micro">GPU / DEVICE</span><strong id="gpu-name">로컬 GPU 연결을 확인하고 있어요</strong><span class="subline" id="gpu-detail">공개 웹사이트는 별도 로컬 프로그램을 통해서만 GPU를 확인할 수 있어요.</span></div><div class="gauge-wrap"><div class="gauge"><div id="gauge-fill"></div></div><span id="gpu-usage">—</span></div></div>
+          <div class="engine-reason" id="engine-reason" aria-live="polite"></div>
+        </div>
+        <div class="panel"><div class="panel-header"><div class="panel-title"><span class="step">02</span> 장면 설정</div><span class="counter" id="chars">0 / 1,500</span></div>
+          <label class="field-title" for="prompt">어떤 영상을 만들까요?</label>
+          <textarea id="prompt" maxlength="1500" placeholder="예: A cinematic spacecraft gliding past glowing stars...">A spaceship flying through space, cinematic, realistic, detailed</textarea>
+          <div class="prompt-help">영어 설명이 비교적 안정적이야. 피사체·동작·배경·카메라를 넣어봐.</div>
+          <div class="suggestions"><button class="preset" type="button" data-prompt="A beautiful nebula drifting through deep space, cinematic camera movement, realistic">✦ 우주</button><button class="preset" type="button" data-prompt="An astronaut walks on a red desert planet, wind blowing dust, cinematic lighting">◌ 탐사</button><button class="preset" type="button" data-prompt="Neon reflections on wet streets in a futuristic city at night, slow camera dolly">▥ 도시</button></div>
+          <label class="field-title withspace" for="negative">제외할 특징 <span class="optional">선택</span></label>
+          <input id="negative" maxlength="500" value="blurry, distorted, low quality" placeholder="blurry, low quality">
+          <div class="grid-fields"><div><label class="field-title">영상 길이</label><div class="duration-group" id="durations"><button type="button" data-duration="5" class="selected">5초</button><button type="button" data-duration="10">10초</button><button type="button" data-duration="15">15초</button></div></div><div><label class="field-title" for="steps">생성 단계 <strong id="steps-value">12</strong></label><input id="steps" type="range" min="8" max="20" value="12" step="1"><div class="range-label"><span>빠르게</span><span>세밀하게</span></div></div></div>
+          <div class="seed-row"><label class="field-title" for="seed">랜덤 시드</label><input id="seed" type="number" min="0" max="2147483647" value="42"></div>
+          <button id="generate" type="button" class="primary"><span>✦</span> 영상 생성하기 <span class="arrow">↗</span></button>
+          <p class="smallnote" id="selected-mode-note">모드와 연결 상태를 확인하는 중...</p>
+        </div>
+      </section>
+      <section class="rightcol">
+        <div class="panel preview"><div class="panel-header"><div class="panel-title"><span class="step">03</span> 생성 결과</div><span class="label-pill subtle" id="result-pill">대기</span></div>
+          <div class="video-stage"><div id="placeholder" class="placeholder"><div class="visual-icon"><span>▶</span></div><strong>여기에 영상이 나타나요</strong><p>왼쪽에서 프롬프트를 입력하고<br>영상 생성하기를 눌러줘.</p></div><video id="video" controls playsinline hidden></video></div>
+          <div class="result-footer"><div><div class="micro">STATUS</div><strong id="status-title">준비 중</strong><p id="status-message" role="status" aria-live="polite">실행 환경을 확인하고 있어요.</p></div><a id="download" class="download disabled" href="#" aria-disabled="true" download>↓ MP4 저장</a></div>
+          <div class="progress-bg"><div id="progress"></div></div>
+        </div>
+        <div class="panel cloud-card" id="setup"><div class="panel-header"><div class="panel-title">☁ 클라우드 서버 연결</div><span class="micro">OPTIONAL SETUP</span></div><p>영상 생성 서버로 사용할 공개 Hugging Face Space의 ID를 입력해. 서버가 없으면 먼저 Space를 배포해야 해.</p><label class="field-title" for="space-id">Space ID <span class="optional">아이디/Space이름</span></label><div class="space-field"><input id="space-id" placeholder="your-name/my-video-ai"><button id="save-space">저장</button></div><p id="space-saved" class="smallnote">API 엔드포인트: /generate_video</p><a class="learn" href="https://huggingface.co/new-space" target="_blank" rel="noopener noreferrer">Hugging Face 새 Space 만들기 ↗</a><a class="learn direct" id="direct-space" hidden target="_blank" rel="noopener noreferrer">Space에서 직접 영상 만들기 ↗</a></div>
+        <div class="panel tips"><div class="panel-header"><div class="panel-title">▣ 내 컴퓨터 GPU 연결</div></div><p>로컬 GPU를 쓰려면 ZIP에 포함된 <code>start_local_windows.bat</code>을 실행해. <b>http://127.0.0.1:8765</b>에서 이 화면이 열리면 GPU 정보와 로컬 생성 기능을 사용할 수 있어.</p><a class="learn" href="http://127.0.0.1:8765" target="_blank" rel="noopener noreferrer">로컬 웹 앱 열기 ↗</a><p class="smallnote">VRAM이 10GB 미만이면 자동으로 클라우드를 추천해. VRAM 30GB가 곧 빠른 연산을 뜻하지는 않아.</p></div>
+      </section>
+    </div>
+    <footer>FRAMEFORGE <span>·</span> Powered by ZeroScope v2 <span>·</span> AI가 만든 영상은 독립된 짧은 클립을 연결한 결과야. 실제 촬영 영상과 다를 수 있어.</footer>
+  </main>
+</div>
+</body></html>
